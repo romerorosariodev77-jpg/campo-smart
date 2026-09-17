@@ -1,0 +1,22 @@
+{
+  "name": "Campo Smart Control Ganadero",
+  "short_name": "Campo Smart",
+  "description": "Sistema de gestión ganadera offline para el campo.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#07170a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

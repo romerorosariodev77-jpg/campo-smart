@@ -1,0 +1,366 @@
+:root {
+    /* Paleta de colores inspirada en Campo Smart */
+    --bg-dark: #000000;
+    --card-bg: #07170a;
+    --primary-gradient: linear-gradient(135deg, #15d122 0%, #0d7914 100%);
+    --accent-gradient: linear-gradient(135deg, #3df24d 0%, #115316 100%);
+    --text-white: #ffffff;
+    --text-gray: #a2bfa5;
+    --border-green: #143a18;
+    --danger-gradient: linear-gradient(135deg, #d84315 0%, #8e2400 100%);
+}
+
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+}
+
+body { 
+    background-color: var(--bg-dark); 
+    color: var(--text-white); 
+    padding-bottom: 60px; 
+}
+
+/* Cabecera con Logo Corporativo */
+header { 
+    background: var(--card-bg);
+    color: #15d122; 
+    padding: 18px; 
+    text-align: center; 
+    font-weight: 800; 
+    font-size: 1.5rem; 
+    letter-spacing: 1.5px;
+    border-bottom: 2px solid var(--border-green);
+    text-transform: uppercase;
+}
+
+/* Barra de Navegación */
+nav { 
+    display: flex; 
+    justify-content: space-around; 
+    background: #040d05; 
+    padding: 12px 0; 
+    position: sticky; 
+    top: 0; 
+    z-index: 100; 
+    border-bottom: 1px solid var(--border-green);
+}
+
+nav button { 
+    background: none; 
+    border: none; 
+    color: var(--text-gray); 
+    font-size: 0.9rem; 
+    font-weight: bold; 
+    cursor: pointer; 
+    padding: 6px 12px; 
+    transition: all 0.3s ease;
+}
+
+nav button.active { 
+    color: #3df24d; 
+    border-bottom: 3px solid #15d122; 
+    text-shadow: 0 0 10px rgba(21, 209, 34, 0.4);
+}
+
+/* Contenedores y Estructura */
+.container { 
+    max-width: 800px; 
+    margin: 20px auto; 
+    padding: 0 15px; 
+}
+
+.section { 
+    display: none; 
+}
+
+.section.active { 
+    display: block; 
+}
+
+.card { 
+    background: var(--card-bg); 
+    border: 1px solid var(--border-green);
+    border-radius: 12px; 
+    padding: 18px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); 
+}
+
+h2 { 
+    margin-bottom: 15px; 
+    color: #3df24d; 
+    font-size: 1.25rem; 
+    border-bottom: 1px solid var(--border-green); 
+    padding-bottom: 8px; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Formularios Estilo Dark / Neon */
+.form-group { 
+    margin-bottom: 15px; 
+}
+
+label { 
+    display: block; 
+    margin-bottom: 6px; 
+    font-weight: 600; 
+    font-size: 0.85rem; 
+    color: var(--text-gray);
+    text-transform: uppercase;
+}
+
+input, select, textarea { 
+    width: 100%; 
+    padding: 12px; 
+    background: #020a03;
+    border: 1px solid var(--border-green); 
+    border-radius: 8px; 
+    font-size: 1rem; 
+    color: var(--text-white);
+    transition: border 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #15d122;
+    outline: none;
+    box-shadow: 0 0 8px rgba(21, 209, 34, 0.3);
+}
+
+input[readonly] { 
+    background: #040d04; 
+    color: var(--text-gray);
+    border-style: dashed;
+}
+
+/* Botonera con Degradados */
+.btn-group { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+    margin-bottom: 20px; 
+}
+
+button.btn { 
+    padding: 14px; 
+    border: none; 
+    border-radius: 8px; 
+    font-size: 0.95rem; 
+    font-weight: bold; 
+    cursor: pointer; 
+    color: var(--text-white); 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.1s ease, opacity 0.2s ease;
+}
+
+button.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary { 
+    background: var(--primary-gradient); 
+}
+
+.btn-accent { 
+    background: var(--accent-gradient); 
+}
+
+.btn-cancel { 
+    background: linear-gradient(135deg, #424242 0%, #212121 100%); 
+    color: #e0e0e0;
+}
+
+/* Filas de Datos e Informes */
+.item-list { 
+    margin-top: 5px; 
+}
+
+.item-row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 12px 8px; 
+    border-bottom: 1px solid rgba(20, 58, 24, 0.4); 
+    font-size: 0.95rem; 
+}
+
+.item-row:last-child { 
+    border: none; 
+}
+
+.item-row small {
+    color: var(--text-gray) !important;
+}
+
+/* Etiquetas (Badges) con Degradados */
+.badge { 
+    padding: 4px 10px; 
+    border-radius: 20px; 
+    font-size: 0.75rem; 
+    font-weight: bold; 
+    color: var(--text-white); 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-hembra { 
+    background: linear-gradient(135deg, #ec407a 0%, #ad1457 100%); 
+}
+
+.badge-macho { 
+    background: linear-gradient(135deg, #42a5f5 0%, #1565c0 100%); 
+}
+
+.badge-compra { 
+    background: linear-gradient(135deg, #66bb6a 0%, #2e7d32 100%); 
+}
+
+.badge-venta { 
+    background: linear-gradient(135deg, #ffa726 0%, #ef6c00 100%); 
+}
+
+/* Ventanas Modales Emergentes */
+.modal { 
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0, 0, 0, 0.85); 
+    backdrop-filter: blur(4px);
+    z-index: 1000; 
+    overflow-y: auto; 
+}
+
+.modal-content { 
+    background: #051006; 
+    border: 1px solid #15d122;
+    margin: 12% auto; 
+    padding: 24px; 
+    width: 90%; 
+    max-width: 480px; 
+    border-radius: 14px; 
+    box-shadow: 0 0 30px rgba(21, 209, 34, 0.2);
+}
+
+@media(max-width: 600px) { 
+    .modal-content { 
+        margin: 8% auto; 
+        width: 92%; 
+        padding: 18px;
+    } 
+}
+/* Cabecera Estructurada con el Logotipo Original Ajustado */
+.app-header { 
+    background: var(--card-bg);
+    padding: 10px 20px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    border-bottom: 2px solid var(--border-green);
+}
+
+.header-logo-container {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.header-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Suave resplandor verde para integrar el logo con el fondo oscuro */
+    filter: drop-shadow(0 0 8px rgba(61, 242, 77, 0.25));
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.1;
+}
+
+.brand-title {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.brand-subtitle {
+    color: #3df24d; /* Verde brillante idéntico a las barras del logo */
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-top: -1px;
+}
+/* Estilos para el Sistema de Alertas Automáticas */
+.alert-container {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.alert-tag {
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.alert-parto {
+    background-color: rgba(216, 67, 21, 0.2);
+    border: 1px solid #ff5722;
+    color: #ff7043;
+    text-shadow: 0 0 5px rgba(255, 87, 34, 0.3);
+}
+
+.alert-celo {
+    background-color: rgba(255, 167, 38, 0.2);
+    border: 1px solid #ffb74d;
+    color: #ffe082;
+    text-shadow: 0 0 5px rgba(255, 183, 77, 0.3);
+}
+/* Botón de eliminación compacto */
+.btn-delete {
+    background: none;
+    border: 1px solid #ff5722;
+    color: #ff7043;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-delete:hover {
+    background: rgba(255, 87, 34, 0.15);
+}
+/* Estilos para la miniatura de foto de cada animal */
+.avatar-animal {
+    width: 65px;
+    height: 65px;
+    border-radius: 8px;
+    border: 1px solid var(--border-green);
+    object-fit: cover;
+    background: #020a03;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}

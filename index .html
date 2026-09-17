@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campo Smart - Control Ganadero</title>
+    
+    <!-- ENLACE AL ESTILO (Debe ir primero) -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- CONFIGURACIÓN PWA PARA MÓVIL -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#07170a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <script>
+        // Registro del motor offline
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('Modo offline activo.'))
+                .catch(err => console.log('Error de service worker', err));
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Cabecera de la Aplicación -->
+    <header class="app-header">
+        <div class="header-logo-container">
+            <img src="logo.png" alt="Campo Smart Logo" class="header-logo">
+        </div>
+        <div class="brand-text">
+            <span class="brand-title">Campo</span>
+            <span class="brand-subtitle">Smart</span>
+        </div>
+    </header>
+    
+    <!-- Barra de Navegación Corregida -->
+    <nav>
+        <button id="nav-db" class="active" onclick="cambiarSeccion('db')">Base Datos</button>
+        <button id="nav-sanidad" onclick="cambiarSeccion('sanidad')">Sanidad</button>
+        <button id="nav-servicio" onclick="cambiarSeccion('servicio')">Servicios/Tactos</button>
+        <button id="nav-hacienda" onclick="cambiarSeccion('hacienda')">Hacienda</button>
+    </nav>
+
+
+    <div class="container">
+        
+        <!-- SECCIÓN 1: BASE DE DATOS DE ANIMALES -->
+        <div id="sec-db" class="section active">
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="abrirModal('modal-animal')">+ Nuevo Animal</button>
+                <button class="btn btn-accent" onclick="abrirModal('modal-movimiento')">Mover Lote</button>
+            </div>
+            
+            <!-- CONTADORES DE STOCK EN TIEMPO REAL -->
+            <div class="card" style="background: linear-gradient(135deg, #07170a 0%, #030d04 100%);">
+                <h2>Resumen de Existencias</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; text-align: center; margin-top: 5px;">
+                    <div style="padding: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-green); border-radius: 6px;">
+                        <span style="font-size: 0.75rem; color: var(--text-gray); display: block; text-transform: uppercase;">Total</span>
+                        <strong id="stk-total" style="font-size: 1.3rem; color: #3df24d;">0</strong>
+                    </div>
+                    <div style="padding: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-green); border-radius: 6px;">
+                        <span style="font-size: 0.75rem; color: var(--text-gray); display: block; text-transform: uppercase;">Vacas</span>
+                        <strong id="stk-vacas" style="font-size: 1.3rem; color: #ffffff;">0</strong>
+                    </div>
+                    <div style="padding: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-green); border-radius: 6px;">
+                        <span style="font-size: 0.75rem; color: var(--text-gray); display: block; text-transform: uppercase;">Vaquillonas</span>
+                        <strong id="stk-vaquillonas" style="font-size: 1.3rem; color: #ffffff;">0</strong>
+                    </div>
+                    <div style="padding: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-green); border-radius: 6px;">
+                        <span style="font-size: 0.75rem; color: var(--text-gray); display: block; text-transform: uppercase;">Toros</span>
+                        <strong id="stk-toros" style="font-size: 1.3rem; color: #ffffff;">0</strong>
+                    </div>
+                    <div style="padding: 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-green); border-radius: 6px;">
+                        <span style="font-size: 0.75rem; color: var(--text-gray); display: block; text-transform: uppercase;">Terneros</span>
+                        <strong id="stk-terneros" style="font-size: 1.3rem; color: #ffffff;">0</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUSCADOR INDEPENDIENTE POR CARAVANA -->
+            <div class="card" style="background: linear-gradient(135deg, #040d05 0%, #020a03 100%); border-color: #15d122;">
+                <h2>Buscador de Hacienda</h2>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <input type="text" id="buscar-caravana" oninput="filtrarPorCaravana(this.value)" placeholder="🔍 Digita el número de RP / Caravana..." style="font-size: 1.1rem; padding: 12px;">
+                </div>
+            </div>
+
+            <!-- FILTRO DE VISTA POR CATEGORÍA -->
+            <div class="card">
+                <h2>Filtro de Vista</h2>
+                <select id="filtro-tipo" onchange="filtrarAnimales(this.value)">
+                    <option value="TODOS">Ver Todos</option>
+                    <option value="Vaca">Vacas</option>
+                    <option value="Vaquillona">Vaquillonas</option>
+                    <option value="Toro">Toros</option>
+                    <option value="Ternero/a">Terneros/as</option>
+                </select>
+            </div>
+
+            <!-- INVENTARIO GENERAL DESPLEGABLE -->
+            <details class="card desplegable-inventario" open>
+                <summary>
+                    <h2>Inventario General <span class="flecha-indicador">▼</span></h2>
+                </summary>
+                <div style="margin-top: 15px;">
+                    <div id="lista-animales" class="item-list"></div>
+                </div>
+            </details>
+        </div>
+
+        <!-- SECCIÓN 2: SANIDAD CLÍNICA -->
+        <div id="sec-sanidad" class="section">
+            <button class="btn btn-primary" style="width:100%; margin-bottom:15px;" onclick="abrirModal('modal-sanidad')">Registrar Tratamiento / Vacuna</button>
+            <div class="card">
+                <h2>Historial Clínico y Sanitario</h2>
+                <div id="lista-sanidad" class="item-list"></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: SERVICIOS Y REPRODUCCIÓN (SOLO HEMBRAS) -->
+        <div id="sec-servicio" class="section">
+            <button class="btn btn-primary" style="width:100%; margin-bottom:15px;" onclick="abrirModal('modal-servicio')">Registrar Servicio / Inseminación / Tacto</button>
+            <div class="card">
+                <h2>Historial de Servicios y Reproducción</h2>
+                <div id="lista-servicio" class="item-list"></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: COMPRA Y VENTA DE HACIENDA -->
+        <div id="sec-hacienda" class="section">
+            <button class="btn btn-accent" style="width:100%; margin-bottom:15px;" onclick="abrirModal('modal-transaccion')">Registrar Compra / Venta</button>
+            <div class="card">
+                <h2>Libro de Transacciones Cortas</h2>
+                <div id="lista-transacciones" class="item-list"></div>
+            </div>
+        </div>
+
+        <!-- COPIA DE SEGURIDAD OFFLINE -->
+        <div class="card" style="margin-top: 30px; border-style: dashed;">
+            <h2>Copia de Seguridad Offline</h2>
+            <p style="font-size: 0.85rem; color: var(--text-gray); margin-bottom: 12px;">Usa estas herramientas para no perder tus datos. No requieren señal.</p>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="exportarDatosOffline()">Descargar Respaldo</button>
+                <button class="btn btn-cancel" onclick="document.getElementById('archivo-respaldo').click()">Importar Respaldo</button>
+            </div>
+            <input type="file" id="archivo-respaldo" accept=".json, .txt" style="display: none;" onchange="importarDatosOffline(event)">
+        </div>
+
+    </div> <!-- Fin Container -->
+    <!-- MODALES: FORMULARIOS EMERGENTES -->
+
+    <!-- REGISTRAR ANIMAL -->
+    <div id="modal-animal" class="modal">
+        <div class="modal-content">
+            <h2>Registrar Nuevo Animal</h2>
+            <form id="form-animal" onsubmit="guardarAnimal(event)">
+                <div class="form-group">
+                    <label>ID / Caravana:</label>
+                    <input type="text" id="ani-id" required>
+                </div>
+                <div class="form-group">
+                    <label>Sexo:</label>
+                    <select id="ani-sexo" required>
+                        <option value="HEMBRA">Hembra</option>
+                        <option value="MACHO">Macho</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Categoría:</label>
+                    <select id="ani-tipo" required>
+                        <option value="Vaca">Vaca</option>
+                        <option value="Vaquillona">Vaquillona</option>
+                        <option value="Toro">Toro</option>
+                        <option value="Ternero/a">Ternero/a</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Potrero / Lote Inicial:</label>
+                    <input type="text" id="ani-lote" value="General" required>
+                </div>
+                <div class="form-group">
+                    <label>Notas / Marca:</label>
+                    <textarea id="ani-notas" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Foto del Animal (Cámara o Galería):</label>
+                    <input type="file" id="ani-foto" accept="image/*" style="padding: 5px;">
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Guardar</button>
+                    <button type="button" class="btn btn-cancel" style="flex:1;" onclick="cerrarModal('modal-animal')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MOVIMIENTO DE LOTE -->
+    <div id="modal-movimiento" class="modal">
+        <div class="modal-content">
+            <h2>Registrar Movimiento de Lote</h2>
+            <form id="form-movimiento" onsubmit="guardarMovimientoLote(event)">
+                <div class="form-group">
+                    <label>ID Animal o escribe "Todos":</label>
+                    <input type="text" id="mov-animal-id" required placeholder="Ej: 101 o Todos">
+                </div>
+                <div class="form-group">
+                    <label>Lote / Potrero Destino:</label>
+                    <input type="text" id="mov-destino" required placeholder="Ej: Potrero Norte">
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Mover</button>
+                    <button type="button" class="btn btn-cancel" style="flex:1;" onclick="cerrarModal('modal-movimiento')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SANIDAD CLÍNICA -->
+    <div id="modal-sanidad" class="modal">
+        <div class="modal-content">
+            <h2>Registrar Evento Sanitario</h2>
+            <form id="form-sanidad" onsubmit="guardarSanidad(event)">
+                <div class="form-group">
+                    <label>Caravana del Animal:</label>
+                    <input type="text" id="san-id" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Tratamiento:</label>
+                    <select id="san-evento" required>
+                        <option value="Vacunación (Aftosa/Carbunclo)">Vacunación</option>
+                        <option value="Tratamiento Enfermedad / Antibiótico">Tratamiento Enfermedad</option>
+                        <option value="Desparasitación">Desparasitación</option>
+                        <option value="Control de Peso / Otro">Otros Controles</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Medicamento / Producto / Notas:</label>
+                    <textarea id="san-detalle" rows="2" required></textarea>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Registrar</button>
+                    <button type="button" class="btn btn-cancel" style="flex:1;" onclick="cerrarModal('modal-sanidad')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SERVICIO / REPRODUCCIÓN -->
+    <div id="modal-servicio" class="modal">
+        <div class="modal-content">
+            <h2>Control de Servicio (Hembras)</h2>
+            <form id="form-servicio" onsubmit="guardarServicio(event)">
+                <div class="form-group">
+                    <label>Caravana de la Hembra:</label>
+                    <input type="text" id="srv-id" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Evento Reproductivo:</label>
+                    <select id="srv-evento" required>
+                        <option value="Servicio Natural (Campo)">Servicio Natural</option>
+                        <option value="Inseminación Artificial (Iatf)">Inseminación Artificial</option>
+                        <option value="Diagnóstico de Tacto / Ecografía">Tacto / Ecografía</option>
+                        <option value="Parto Registrado">Parto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Toro / Lote / Detalle:</label>
+                    <textarea id="srv-detalle" rows="2" required></textarea>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Registrar</button>
+                    <button type="button" class="btn btn-cancel" style="flex:1;" onclick="cerrarModal('modal-servicio')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- COMPRA Y VENTA -->
+    <div id="modal-transaccion" class="modal">
+        <div class="modal-content">
+            <h2>Transacción de Hacienda</h2>
+            <form id="form-transaccion" onsubmit="guardarTransaccion(event)">
+                <div class="form-group">
+                    <label>Operación:</label>
+                    <select id="trans-tipo" required>
+                        <option value="COMPRA">Compra</option>
+                        <option value="VENTA">Venta</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Categoría Comercial:</label>
+                    <input type="text" id="trans-categoria" required>
+                </div>
+                <div class="form-group">
+                    <label>Cabezas (Cantidad):</label>
+                    <input type="number" id="trans-cabezas" required min="1" oninput="calcularMontoTotal()">
+                </div>
+                <div class="form-group">
+                    <label>Precio por Cabeza ($):</label>
+                    <input type="number" id="trans-precio-unitario" required min="0" oninput="calcularMontoTotal()">
+                </div>
+                <div class="form-group">
+                    <label>Monto Total Calculado ($):</label>
+                    <input type="number" id="trans-monto-total" readonly>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Confirmar</button>
+                    <button type="button" class="btn btn-cancel" style="flex:1;" onclick="cerrarModal('modal-transaccion')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ENLACE AL CONTROLADOR LOGICO (Al final para garantizar que todo el HTML cargó primero) -->
+    <script src="app.js"></script>
+</body>
+</html>
